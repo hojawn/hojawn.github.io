@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="CDLM-Bench: a unified library and benchmark for continuous diffusion language models. Understand likelihood bounds, evaluate generated distributions, and make comparisons reproducible.">
+  <meta property="og:title" content="CDLM-Bench — Better evaluation. Better CDLMs.">
+  <meta property="og:description" content="Likelihood analysis, generation evaluation, and reproducible comparisons for continuous diffusion language models.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hojawn.github.io/CDLM-Bench/">
+  <meta property="og:image" content="https://hojawn.github.io/CDLM-Bench/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CDLM-Bench">
+  <meta name="twitter:description" content="Better evaluation. Better continuous diffusion language models.">
+  <meta name="twitter:image" content="https://hojawn.github.io/CDLM-Bench/assets/social-card.png">
+  <link rel="canonical" href="https://hojawn.github.io/CDLM-Bench/">
+  <link rel="icon" type="image/svg+xml" href="./assets/polyadic-mark.svg">
+  <link rel="stylesheet" href="./assets/style.css">
+  <title>CDLM-Bench — A Unified Library and Benchmark</title>
+  <script src="./assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#main" aria-label="CDLM-Bench home">
+        <img src="./assets/polyadic-mark.svg" width="29" height="29" alt="">
+        <span>CDLM-Bench<small>POLYADIC RESEARCH GROUP</small></span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" type="button">Menu <span aria-hidden="true">+</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="#overview">Overview</a>
+        <a href="#evaluation">Evaluation</a>
+        <a href="#findings">Findings</a>
+        <a href="#resources">Resources</a>
+        <a class="team-nav" href="https://pkulwj1994.github.io/polyadic-research/" target="_blank" rel="noopener">Our team <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="project-title">
+      <p class="eyebrow hero-eyebrow"><span class="status-dot" aria-hidden="true"></span> CONTINUOUS DIFFUSION LANGUAGE MODELS</p>
+      <h1 id="project-title">Better evaluation.<br><span class="gradient-text">Better CDLMs.</span></h1>
+      <p class="paper-title">CDLM-Bench: A Unified Library and Benchmark<br class="desktop-break"> for Continuous Diffusion Language Models</p>
+      <div class="authors" aria-label="Authors">
+        <a href="https://github.com/hojawn" target="_blank" rel="noopener">Hao Jiang<sup>1,2</sup></a>
+        <span>Yujian Chen<sup>1,3</sup></span>
+        <a href="https://pkulwj1994.github.io/" target="_blank" rel="noopener">Weijian Luo<sup>4,*</sup></a>
+        <a href="https://hu-tianyang.github.io/" target="_blank" rel="noopener">Tianyang Hu<sup>1,2,*</sup></a>
+      </div>
+      <p class="affiliations"><sup>1</sup> Polyadic Research Group <span>·</span> <sup>2</sup> SAGA Lab, CUHK-Shenzhen<br>
+        <sup>3</sup> School of Computer Science, Peking University <span>·</span> <sup>4</sup> Dots Studio, Xiaohongshu</p>
+      <!-- TODO(paper): Add the final public paper/PDF URL here when selected. -->
+      <div class="hero-actions">
+        <a class="button-primary" href="https://github.com/hojawn/CDLM_Benchmarks" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-14-2 18"/></svg>
+          Explore the code <span aria-hidden="true">↗</span>
+        </a>
+        <a class="text-link" href="#overview">Explore the benchmark <span aria-hidden="true">↓</span></a>
+      </div>
+
+      <div class="hero-demo" id="collapse-demo">
+        <div class="demo-heading">
+          <div><p class="mini-label">THE EVALUATION BLIND SPOT</p><h2 id="demo-title">512 real texts.<br>A reference distribution.</h2></div>
+          <div class="segmented-control" role="group" aria-label="Select a sample construction">
+            <button type="button" data-demo="control" aria-pressed="true">Real control</button>
+            <button type="button" data-demo="best_single_high_entropy" aria-pressed="false">Repeat one text</button>
+          </div>
+        </div>
+        <div class="demo-body">
+          <div class="sample-visual">
+            <div class="visual-label"><span>OUTPUT SUPPORT</span><span id="support-count">512 distinct texts</span></div>
+            <svg id="support-diagram" viewBox="0 0 540 165" role="img" aria-labelledby="support-title support-description">
+              <title id="support-title">A schematic of output diversity</title>
+              <desc id="support-description">Different source texts spread across a field. Repeating one text collapses the field to a single support point. The point layout is illustrative.</desc>
+              <defs>
+                <linearGradient id="dot-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0071e3"/><stop offset="1" stop-color="#8359c9"/></linearGradient>
+                <radialGradient id="field-glow"><stop stop-color="#e2e9ff" stop-opacity=".8"/><stop offset="1" stop-color="#f5f5f7" stop-opacity="0"/></radialGradient>
+              </defs>
+              <ellipse cx="270" cy="83" rx="250" ry="81" fill="url(#field-glow)"/>
+              <g id="support-dots"></g>
+            </svg>
+            <p class="visual-note">Same output count. A different distribution.<br><span>Point positions are schematic; scores come from the experiments below.</span></p>
+          </div>
+          <div class="demo-scores" aria-live="polite" aria-atomic="true">
+            <div class="demo-score"><div><span>Generative perplexity</span><small>External judge · lower is usually preferred</small></div><strong id="demo-ppl">25.960</strong></div>
+            <div class="demo-score"><div><span>Within-text entropy</span><small>Vocabulary variation inside each text</small></div><strong id="demo-entropy">4.275</strong></div>
+            <div class="demo-score distribution-score"><div><span>Distribution discrepancy</span><small>Signed-root MMD · lower discrepancy</small></div><strong id="demo-mmd">0.01549</strong></div>
+          </div>
+        </div>
+        <div class="demo-takeaway"><span class="takeaway-dot" aria-hidden="true"></span><p id="demo-takeaway">An independent real sample provides a reference for finite-sample variation.</p></div>
+        <p class="demo-protocol">OWT · 128-token source windows · 512 outputs per set · means over 3 folds</p>
+      </div>
+      <div class="hero-footer" aria-label="Research themes"><span>LIKELIHOOD INTERPRETATION</span><span>GENERATION DISTRIBUTIONS</span><span>REPRODUCIBLE COMPARISONS</span></div>
+    </section>
+
+    <section class="section soft-section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><p class="eyebrow">The benchmark</p><h2 id="overview-title">Make every improvement<br>mean something.</h2></div>
+          <p>A score is useful when we know what it measures, what it misses, and how to reproduce it.</p>
+        </div>
+        <div class="contribution-grid">
+          <article class="contribution"><span class="item-number">01</span><div class="contribution-symbol bound-symbol" aria-hidden="true">PPL <span>+ gap</span></div><h3>Interpret the likelihood.</h3><p>Separate exact text likelihood, variational slack, and numerical error. A tighter bound and a better model are different improvements.</p><a class="text-link" href="#evaluation">Understand the comparison <span aria-hidden="true">↘</span></a></article>
+          <article class="contribution"><span class="item-number">02</span><div class="contribution-symbol dot-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Evaluate the distribution.</h3><p>Compare generated sets with real text. Track diversity, coverage, repetition, and rare failures alongside a fixed kernel discrepancy.</p><a class="text-link" href="#findings">Explore the stress tests <span aria-hidden="true">↘</span></a></article>
+          <article class="contribution"><span class="item-number">03</span><div class="contribution-symbol flow-symbol" aria-hidden="true"><span>θ</span><b>→</b><span>x</span><b>→</b><span>✓</span></div><h3>Reproduce the comparison.</h3><p>Connect model definitions, sampling settings, saved outputs, and evaluation protocols through a common experimental interface.</p><a class="text-link" href="#resources">See the library design <span aria-hidden="true">↘</span></a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="evaluation" aria-labelledby="evaluation-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><p class="eyebrow">Likelihood matters. So does its meaning.</p><h2 id="evaluation-title">Three perplexities.<br>Three different questions.</h2></div>
+          <p>Keep the model’s probability, a computable bound, and an external judge’s score distinct.</p>
+        </div>
+        <div class="perplexity-list">
+          <article class="perplexity-row"><div><span class="row-tag">EXACT PPL</span><h3>What probability does the model assign to real text?</h3></div><p>Autoregressive token conditionals give a directly computable discrete likelihood under a specified tokenizer and scoring convention.</p><div class="equation">PPL<sub>θ</sub> = exp(𝓛<sub>θ</sub>)</div></article>
+          <article class="perplexity-row"><div><span class="row-tag purple-tag">BOUND PPL</span><h3>How large is an upper bound on the model’s NLL?</h3></div><p>A latent CDLM’s bound includes posterior mismatch. Its ranking combines model fit with the tightness of the inference reference.</p><div class="equation">𝓤<sub>r</sub> = 𝓛<sub>θ</sub> + 𝓖<sub>r</sub><small>𝓖<sub>r</sub> ≥ 0</small></div></article>
+          <article class="perplexity-row"><div><span class="row-tag">GEN PPL</span><h3>How predictable are generated outputs to a judge?</h3></div><p>An external language model scores generated texts. Concentrating on easy texts can improve this score while reducing output diversity.</p><div class="equation">GenPPL = exp(CE<sub>judge</sub>)</div></article>
+        </div>
+        <div class="likelihood-insight">
+          <div class="insight-icon" aria-hidden="true">↗</div>
+          <div><h3>A useful comparison has a direction.</h3><p>Under matched scoring, a valid CDLM NLL bound below exact AR NLL certifies a likelihood improvement. A bound above AR NLL does not establish the reverse ranking. A reference-scale optimum also does not certify a small total gap.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft-section findings-section" id="findings" aria-labelledby="findings-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><p class="eyebrow">Controlled experiments</p><h2 id="findings-title">Stress the metric.<br>Understand its blind spots.</h2></div>
+          <p>Constructed output sets isolate collapse, local corruption, and formatting sensitivity. Explore what each measurement sees.</p>
+        </div>
+        <div class="results-panel">
+          <div class="results-toolbar"><div class="filter-tabs" role="group" aria-label="Filter controlled experiments"><button type="button" data-filter="collapse" aria-pressed="true">Support & selection</button><button type="button" data-filter="corruption" aria-pressed="false">Local edits</button><button type="button" data-filter="formatting" aria-pressed="false">Formatting</button><button type="button" data-filter="all" aria-pressed="false">All results</button></div><span class="results-size">n = 512</span></div>
+          <p class="table-scroll-hint">Swipe to see all metrics <span aria-hidden="true">↔</span></p>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Controlled experiment results, horizontally scrollable on small screens">
+            <table class="results-table">
+              <caption class="sr-only">Three-fold mean scores for controlled OpenWebText constructions. MMD and MAUVE show standard deviations over folds.</caption>
+              <thead><tr><th scope="col">Output construction</th><th scope="col">Gen PPL <span>↓</span></th><th scope="col">H<sub>row</sub></th><th scope="col">MMD display <span>↓</span></th><th scope="col">MAUVE <span>↑</span></th></tr></thead>
+              <tbody id="results-body">
+                <tr class="control-row"><th scope="row">Independent real control</th><td>25.960</td><td>4.275</td><td>0.01549 <small>± 0.00748</small></td><td>0.96026 <small>± 0.00221</small></td></tr>
+                <tr><th scope="row">One selected text × 512</th><td>2.461</td><td>4.419</td><td>0.68248 <small>± 0.05884</small></td><td>0.00407 <small>± 0.00000</small></td></tr>
+                <tr><th scope="row">256 texts × 2</th><td>25.944</td><td>4.274</td><td>0.03130 <small>± 0.00608</small></td><td>0.88665 <small>± 0.02012</small></td></tr>
+                <tr><th scope="row">64 texts × 8</th><td>25.693</td><td>4.273</td><td>0.07308 <small>± 0.00134</small></td><td>0.05743 <small>± 0.01755</small></td></tr>
+                <tr><th scope="row">Judge-easiest quartile</th><td>13.427</td><td>4.178</td><td>0.08610 <small>± 0.00662</small></td><td>0.93391 <small>± 0.01353</small></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="filter-insight" id="filter-insight" aria-live="polite">Repeating one selected text improves both conventional scores, while MMD and MAUVE reveal the collapsed output distribution.</p>
+          <details class="protocol-details"><summary>Experimental protocol and how to read the scores <span aria-hidden="true">+</span></summary><div>
+            <p>OWT validation pilot: 128-token source windows, 512 outputs per set, and 3 folds from one available shard. Gen PPL is scored by GPT-2 Large. H<sub>row</sub> is mean within-text unigram entropy.</p>
+            <p>“MMD display” is sign(MMD²)√|MMD²|, using BF16 mean-pooled GPT-2 Large features and a reference-median RBF bandwidth. MAUVE uses FP32 last-token features, 51 clusters, and 3 clustering seeds per fold. Their default pipelines differ; the table does not isolate the discrepancy formula.</p>
+            <p>± denotes fold standard deviation, not a confidence interval. Controlled repetitions are descriptive stress tests. The selected single text minimizes judge NLL subject to entropy at least the control mean; it was not selected by human ratings. Feature-neighbor selection uses the same mean-feature space and is a directed diagnostic.</p>
+            <p>The scoring protocol uses independent kernel calibration for statistical inference and keeps it distinct from these historical default-pipeline results. No model leaderboard is implied by constructed output sets.</p>
+          </div></details>
+        </div>
+        <div class="finding-notes">
+          <article><span class="finding-index">01 / COLLAPSE</span><h3>Sample quality is only part of the story.</h3><p>Within-text entropy can stay high when every output is identical. Measure variation across outputs as well as inside each text.</p></article>
+          <article><span class="finding-index">02 / SENSITIVITY</span><h3>The representation changes what you see.</h3><p>Mean and last-token features respond differently to edit location. Formatting can move a score more than structural corruption.</p></article>
+          <article><span class="finding-index">03 / CALIBRATION</span><h3>A small distance has limits.</h3><p>Rare errors can be diluted in global measurements. Pair the distribution score with explicit event rates, coverage, and real-versus-real controls.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="resources" aria-labelledby="resources-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><p class="eyebrow">A common experimental foundation</p><h2 id="resources-title">From checkpoint<br>to a comparison you can trace.</h2></div>
+          <p>A shared evaluation core, model-specific interfaces, and explicit protocols for model and sampler studies.</p>
+        </div>
+        <div class="pipeline" aria-label="Benchmark workflow">
+          <div><span class="pipeline-label">01 · MODEL</span><strong>Define the model.</strong><p>Weights, decoder,<br>and likelihood target.</p></div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div><span class="pipeline-label">02 · SAMPLER</span><strong>Specify the process.</strong><p>Solver, temperature,<br>steps, and seeds.</p></div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div><span class="pipeline-label">03 · OUTPUTS</span><strong>Save the evidence.</strong><p>Sample records,<br>hashes, and metadata.</p></div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div><span class="pipeline-label">04 · EVALUATION</span><strong>Compare with context.</strong><p>Fixed measurements,<br>controls, and uncertainty.</p></div>
+        </div>
+        <div class="library-grid">
+          <article class="library-copy"><p class="mini-label">CDLM-BENCH LIBRARY</p><h3>One evaluation interface.<br>More interpretable results.</h3><p>Use a common sample interface for Gen PPL, entropy decomposition, MMD, MAUVE, and diagnostic metrics. Evaluate saved outputs with the same preprocessing and reference budget.</p><div class="model-tags"><span>LangFlow</span><span>RePlaid</span><span>AR & discrete controls</span></div><p class="small-note">The benchmark design separates original-recipe reproduction from standardized comparison. Sampler studies hold the checkpoint fixed.</p><a class="text-link" href="https://github.com/hojawn/CDLM_Benchmarks" target="_blank" rel="noopener">View code & documentation <span aria-hidden="true">↗</span></a></article>
+          <div class="code-panel"><div class="code-toolbar"><span><i></i><i></i><i></i></span><span>evaluate.py</span><button class="copy-button" type="button" data-copy="quickstart-code" aria-label="Copy Python evaluation example">Copy</button></div><pre><code id="quickstart-code"><span class="code-purple">from</span> dlm_metrics <span class="code-purple">import</span> evaluate
+
+report = evaluate(
+    {<span class="code-string">"ours"</span>: <span class="code-string">"samples.pt"</span>},
+    reference=<span class="code-string">"owt_ref.pt"</span>,
+    preset=<span class="code-string">"owt"</span>,
+    n=<span class="code-number">512</span>,
+)
+
+<span class="code-purple">print</span>(report.table())
+report.save(<span class="code-string">"results.json"</span>)</code></pre><div class="code-footnote">Use a reference file containing at least 2n rows.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="citation-section" id="citation" aria-labelledby="citation-title">
+      <div class="wrap citation-grid">
+        <div><p class="eyebrow">Build on the benchmark</p><h2 id="citation-title">Make evaluation<br>a shared foundation.</h2><p>Find the implementation, follow the research, and cite the project.</p><div class="citation-links"><a class="text-link" href="https://github.com/hojawn/CDLM_Benchmarks" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a><a class="text-link" href="https://pkulwj1994.github.io/polyadic-research/" target="_blank" rel="noopener">Polyadic Research Group <span aria-hidden="true">↗</span></a></div></div>
+        <div class="bibtex-panel"><div class="bibtex-header"><span>BibTeX</span><button class="copy-button" type="button" data-copy="bibtex-code" aria-label="Copy BibTeX citation">Copy citation</button></div><pre><code id="bibtex-code">@unpublished{jiang2026cdlmbench,
+  title  = {CDLM-Bench: A Unified Library
+            and Benchmark for Continuous
+            Diffusion Language Models},
+  author = {Hao Jiang and Yujian Chen and
+            Weijian Luo and Tianyang Hu},
+  year   = {2026},
+  note   = {Research manuscript},
+  url    = {https://hojawn.github.io/CDLM-Bench/}
+}</code></pre></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="footer-brand" href="https://pkulwj1994.github.io/polyadic-research/" target="_blank" rel="noopener"><img src="./assets/polyadic-mark.svg" width="23" height="23" alt=""> POLYADIC <span>Research Group</span></a><p>CDLM-Bench · Better signals for continuous language models.</p><a href="#main">Back to top <span aria-hidden="true">↑</span></a></div></footer>
+  <div class="copy-status sr-only" role="status" aria-live="polite"></div>
+</body>
+</html>

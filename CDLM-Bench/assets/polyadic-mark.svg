@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="H3-title H3-desc">
+  <title id="H3-title">Polyadic — Three equal facets P</title>
+  <desc id="H3-desc">Three branches join alternating hexagon vertices to the exact center. Three congruent rhombic faces have 120-degree rotational symmetry. A shorter, parallel vertical stroke sits on the left and shares the vertical center of the main stem.</desc>
+  <g stroke="#2642d5" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path id="left-stroke" d="M 39.91412 84 V 204"/>
+    <path id="stem" d="M 63.91412 224 V 64"/>
+    <path id="hex-bowl" d="M 128 27 L 192.08588 64 L 192.08588 138 L 128 175 L 63.91412 138 L 63.91412 64 Z"/>
+    <path id="three-equal-facets" d="M 128 27 V 101 M 128 101 L 192.08588 138 M 128 101 L 63.91412 138"/>
+  </g>
+</svg>
